@@ -1,0 +1,28 @@
+# Ignore hidden files and folders
+.*
+!.dockerignore
+
+# Node modules or dependencies (if any JS libraries used later)
+node_modules
+bower_components
+
+# Ignore Git and editor config
+.git
+.gitignore
+.vscode
+.idea
+
+# OS/system files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Ignore logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Build or cache folders (if used in future)
+dist
+build
+.cache
