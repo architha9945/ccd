@@ -2,50 +2,52 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'ccd-cafe'
-        CONTAINER_NAME = 'ccd-cafe-container'
+        IMAGE_NAME = "ccd-cafe"
+        CONTAINER_NAME = "ccd-cafe-container"
+        PORT = "3000"
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Clone Repository') {
             steps {
-                // If from Git:
-                // git 
-                echo 'Checking out source code...'
+                git 'https://github.com/architha9945/ccd.git' // 🔁 Replace with your repo if needed
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo "Building Docker image: ${IMAGE_NAME}"
-                sh "docker build -t ${IMAGE_NAME} ."
+                script {
+                    sh "docker build -t $IMAGE_NAME ."
+                }
             }
         }
 
-        stage('Stop & Remove Existing Container') {
+        stage('Stop Existing Container') {
             steps {
-                echo "Removing old container if exists"
-                sh """
-                    docker stop ${CONTAINER_NAME} || true
-                    docker rm ${CONTAINER_NAME} || true
-                """
+                script {
+                    sh """
+                        docker stop $CONTAINER_NAME || true
+                        docker rm $CONTAINER_NAME || true
+                    """
+                }
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Run New Container') {
             steps {
-                echo "Running Docker container: ${CONTAINER_NAME}"
-                sh "docker run -d -p 8080:80 --name ${CONTAINER_NAME} ${IMAGE_NAME}"
+                script {
+                    sh "docker run -d --name $CONTAINER_NAME -p $PORT:$PORT $IMAGE_NAME"
+                }
             }
         }
     }
 
     post {
         success {
-            echo '✅ CCD Café deployed successfully at http://<jenkins-server-ip>:8080'
+            echo "CCD Café deployed successfully at http://localhost:$PORT"
         }
         failure {
-            echo '❌ Build or Deployment failed.'
-        }
-    }
+            echo "Something went wrong."
+        }
+    }
 }
