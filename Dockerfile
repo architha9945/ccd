@@ -1,14 +1,11 @@
-# Use official NGINX base image
+# Use official Nginx image
 FROM nginx:alpine
 
-# Remove default nginx static files
-RUN rm -rf /usr/share/nginx/html/*
+# Copy your custom HTML and assets into Nginx's web directory
+COPY . /usr/share/nginx/html
 
-# Copy your HTML file (and any other assets) to the nginx HTML directory
-COPY ccd-cafe.html /usr/share/nginx/html/index.html
-
-# Expose port 3000 (for host mapping clarity)
+# Expose port 3000 (as you requested)
 EXPOSE 3000
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Replace the default nginx config to listen on port 3000
+RUN sed -i 's/80;/3000;/g' /etc/nginx/conf.d/default.conf
